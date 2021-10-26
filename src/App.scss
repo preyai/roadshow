@@ -1,9 +1,27 @@
-#top {
-  width: 100%;
+#bgr {
+  background-image: url('./img/bacground.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding-top: 2rem;
+  position: relative;
+}
+#logo {
+  display: block;
+  position: absolute;
+  top: 4%;
+  right: 8%;
+  //width: 400px;
+  @media (max-width: 900px) {
+    position: relative;
+    margin-left: auto;
+    max-width: 30%;
+  }
+}
+img {
+  max-width: 100%;
 }
 h1 {
   color: #e52f23ff;
-  font-size: 4rem;
 }
 .points {
   font-size: 2rem;
