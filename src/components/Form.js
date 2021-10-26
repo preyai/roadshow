@@ -18,47 +18,51 @@ const style = {
 };
 
 function Form(props) {
-    const [regions, setRegions] = useState([]);
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [comment, setComment] = useState('');
-    const [region, setRegion] = useState('6177ccb64860dd10fca4e841');
-    const [emailError, setEmailError] = useState(false);
+
     const [status, setStatus] = useState(false);
 
-    useEffect(() => {
-        app.service('regions').find().then((result) => {
-            console.log(result.data);
-            setRegions(result.data);
-        })
-    }, [])
 
-
-    const handleRegion = (event) => {
-        setRegion(event.target.value);
-    };
-
-    const createMember = () => {
-        app.service('members').create({
-            name,
-            email,
-            phone,
-            region,
-            comment
-        }).then((result)=> {
-            setStatus(true);
-        }).catch((error) => {
-            if (error.code === 409 && error.errors.email) {
-                setEmailError(true);
-            }
-        })
-    }
 
     const FormGrid = () => {
+        const [regions, setRegions] = useState([]);
+        const [name, setName] = useState('');
+        const [email, setEmail] = useState('');
+        const [phone, setPhone] = useState('');
+        const [comment, setComment] = useState('');
+        const [region, setRegion] = useState('6177ccb64860dd10fca4e841');
+        const [emailError, setEmailError] = useState(false);
+
+        useEffect(() => {
+            app.service('regions').find().then((result) => {
+                console.log(result.data);
+                setRegions(result.data);
+            })
+        }, [])
+
+
+        const handleRegion = (event) => {
+            setRegion(event.target.value);
+        };
+
+        const createMember = () => {
+            app.service('members').create({
+                name,
+                email,
+                phone,
+                region,
+                comment
+            }).then((result)=> {
+                setStatus(true);
+            }).catch((error) => {
+                if (error.code === 409 && error.errors.email) {
+                    setEmailError(true);
+                }
+            })
+        }
         return <Grid container spacing={2}>
             <Grid item xs={6}>
                 <TextField
+
                     label="Имя"
                     variant="outlined"
                     fullWidth

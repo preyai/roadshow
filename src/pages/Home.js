@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {
     Box,
     Button,
@@ -7,7 +7,7 @@ import {
     List,
     ListItem,
     MenuItem,
-    Modal,
+    Modal, Popover,
     styled,
     TextField,
     Typography
@@ -25,34 +25,95 @@ import MapIcon from "@mui/icons-material/Map";
 import ColorButton from "../components/ColorButton";
 import InlineButton from "../components/InlineButton";
 import Form from "../components/Form";
-
-const  regions = [
-    {
-        value: 'spb',
-        label: 'Санкт-Петербург',
-    },
-    {
-        value: 'rzn',
-        label: 'Рязань',
-    },
-    {
-        value: 'msk',
-        label: 'Москва',
-    },
-]
+import {app} from "../feathersClient";
 
 
+
+function Region({item}) {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [memCount, setMemCount] = useState(0);
+
+    const handlePopoverOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+    const open = Boolean(anchorEl);
+
+    useEffect(() => {
+        app.service('members').find({query:{'region': item._id}}).then((result) => {
+            console.log(result.data);
+            setMemCount(result.total);
+        })
+    }, [])
+
+    return(
+        <Grid item xs={12} md={4}>
+            <Typography variant='h4' mb={2}>{item.label} {' '}
+                <Typography
+                    variant='h6'
+                    component='span'
+                    aria-owns={open ? 'mouse-over-popover' : undefined}
+                    aria-haspopup="true"
+                    onMouseEnter={handlePopoverOpen}
+                    onMouseLeave={handlePopoverClose}
+                >({item.limit - memCount})</Typography>
+                <Popover
+                    id="mouse-over-popover"
+                    sx={{
+                        pointerEvents: 'none',
+                    }}
+                    open={open}
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                    onClose={handlePopoverClose}
+                    disableRestoreFocus
+                >
+                    <Typography sx={{ p: 1 }}>Осталось мест</Typography>
+                </Popover>
+            </Typography>
+            <Grid container alignItems="center" spacing={2}>
+                <Grid item xs={1}><EventIcon/></Grid>
+                <Grid item xs={11}>
+                    <Typography variant='h6'>{item.date}</Typography>
+                </Grid>
+                <Grid item xs={1}><ScheduleIcon/></Grid>
+                <Grid item xs={11}>
+                    <Typography variant='h6'>{item.time}</Typography>
+                </Grid>
+                <Grid item xs={1}><MapIcon/></Grid>
+                <Grid item xs={11}>
+                    <Typography variant='h6'>{item.address}</Typography>
+                </Grid>
+            </Grid>
+        </Grid>
+    )
+}
 
 
 function Home() {
 
-
+    const [regions, setRegions] = useState([]);
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
 
-
+    useEffect(() => {
+        app.service('regions').find().then((result) => {
+            console.log(result.data);
+            setRegions(result.data);
+        })
+    }, [])
 
     return (
         <div>
@@ -89,59 +150,12 @@ function Home() {
                     помещений.
                     Спикеры – технические специалисты Danogips и известные строительные Instagram-блогеры.</Typography>
                 <Grid container spacing={3} mb={2} mt={2}>
-                    <Grid item xs={12} md={4}>
-                        <Typography variant='h4' mb={2}>Санкт-Петербург</Typography>
-                        <Grid container alignItems="center" spacing={2}>
-                            <Grid item xs={1}><EventIcon/></Grid>
-                            <Grid item xs={11}>
-                                <Typography variant='h6'>12 ноября</Typography>
-                            </Grid>
-                            <Grid item xs={1}><ScheduleIcon/></Grid>
-                            <Grid item xs={11}>
-                                <Typography variant='h6'>Начало: 10:00</Typography>
-                            </Grid>
-                            <Grid item xs={1}><MapIcon/></Grid>
-                            <Grid item xs={11}>
-                                <Typography variant='h6'>Адрес: ул. Заставская, дом 31, корпус 2, литера В, помещение
-                                    3-Н</Typography>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <Typography variant='h4' mb={2}>Рязань</Typography>
-                        <Grid container alignItems="center" spacing={2}>
-                            <Grid item xs={1}><EventIcon/></Grid>
-                            <Grid item xs={11}>
-                                <Typography variant='h6'>15 ноября</Typography>
-                            </Grid>
-                            <Grid item xs={1}><ScheduleIcon/></Grid>
-                            <Grid item xs={11}>
-                                <Typography variant='h6'>Начало: 10:00</Typography>
-                            </Grid>
-                            <Grid item xs={1}><MapIcon/></Grid>
-                            <Grid item xs={11}>
-                                <Typography variant='h6'>Адрес: проезд Гоголя, д.6 (территория Рязанского
-                                    Технологического колледжа)</Typography>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <Typography variant='h4' mb={2}>Москва</Typography>
-                        <Grid container alignItems="center" spacing={2}>
-                            <Grid item xs={1}><EventIcon/></Grid>
-                            <Grid item xs={11}>
-                                <Typography variant='h6'>18 ноября</Typography>
-                            </Grid>
-                            <Grid item xs={1}><ScheduleIcon/></Grid>
-                            <Grid item xs={11}>
-                                <Typography variant='h6'>Начало: 10:00</Typography>
-                            </Grid>
-                            <Grid item xs={1}><MapIcon/></Grid>
-                            <Grid item xs={11}>
-                                <Typography variant='h6'>Адрес: ул. Самокатная, д.4. стр. 7</Typography>
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                    {
+                        regions.map((item) => (
+                                <Region key={item._id} item={item}/>
+                            )
+                        )}
+
                 </Grid>
                 <Typography variant='h2'>Программа:</Typography>
                 <List>
@@ -193,7 +207,7 @@ function Home() {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Form />
+                <Form/>
             </Modal>
         </div>
     );

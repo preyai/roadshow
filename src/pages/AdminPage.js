@@ -1,9 +1,11 @@
 import * as React from "react";
 import { authClient } from 'ra-data-feathers';
-import { Admin, Resource,fetchUtils  } from 'react-admin';
+import { Admin, Resource  } from 'react-admin';
 import { app } from '../feathersClient';
 import { UserCreate, UserEdit, UserIcon, UserList } from '../admin/users';
 import restClient from "../restClient";
+import {MemberCreate, MemberEdit, MemberIcon, MemberList, MemberShow} from "../admin/members";
+import {RegionCreate, RegionEdit, RegionIcon, RegionList} from "../admin/regions";
 
 
 
@@ -33,6 +35,8 @@ export default function AdminPage(props) {
         >
             {permissions => [
                 permissions.includes("admin") && <Resource name="users" list={UserList} edit={UserEdit} create={UserCreate} icon={UserIcon} />,
+                permissions.includes("admin") && <Resource name="members" list={MemberList} show={MemberShow} edit={MemberEdit} create={MemberCreate} icon={MemberIcon} />,
+                permissions.includes("admin") && <Resource name="regions" list={RegionList} edit={RegionEdit} create={RegionCreate} icon={RegionIcon} />,
             ]}
         </Admin>
     );

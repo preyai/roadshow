@@ -18,6 +18,9 @@ function App() {
                     <Route path="/roadshow/">
                         <Home />
                     </Route>
+                    <Route path="/">
+                        <Home />
+                    </Route>
                 </Switch>
             </Router>
         </div>
