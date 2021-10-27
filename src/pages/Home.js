@@ -51,8 +51,9 @@ function Region({item}) {
 
     return(
         <Grid item xs={12} md={4}>
-            <Typography variant='h4' mb={2}>{item.label} {' '}
+            <Typography variant='h4' mb={2}>{item.label} {': '}
                 <Typography
+                    className='region-count'
                     variant='h6'
                     component='span'
                     aria-owns={open ? 'mouse-over-popover' : undefined}
@@ -123,7 +124,7 @@ function Home() {
                 <img src={road} alt=""/>
                 <Grid container alignItems='center' mb={2}>
                     <Grid item xs={8}>
-                        <Typography variant='h2' component='h1'>Первый в истории <br/>DanoПробег</Typography>
+                        <Typography variant='h2'  component='h1'>Первый в истории <br/>DanoПробег</Typography>
                     </Grid>
                     <Grid item xs={4}>
                         <img src={protector} alt=""/>

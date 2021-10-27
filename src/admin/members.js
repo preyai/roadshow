@@ -25,6 +25,7 @@ export const MemberList = (props) => (
             <TextField source="name" />
             <TextField source="email" />
             <TextField source="phone" />
+            <BooleanField source="status" />
             <EditButton basePath="/members" />
         </Datagrid>
     </List>

@@ -22,10 +22,18 @@ img {
 }
 h1 {
   color: #e52f23ff;
+  @media (max-width: 600px) {
+    font-size: 2.8rem !important;
+  }
 }
 .points {
   font-size: 2rem;
   font-weight: 600;
   line-height: 1;
   margin-bottom: 2rem;
+}
+.region-count {
+  color: #e52f23ff;
+  text-decoration: underline dashed;
+  //text-underline-offset: 4px;
 }
